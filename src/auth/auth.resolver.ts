@@ -2,11 +2,13 @@ import { Args, Mutation, Resolver } from '@nestjs/graphql';
 import { LoginResponse } from './dto/login.response';
 import { LoginInput } from './dto/login.input';
 import { AuthService } from './auth.service';
+import { PublicRoute } from 'src/common/decorators/mark-as-route-public';
 
 @Resolver()
 export class AuthResolver {
   constructor(private authService: AuthService) {}
 
+  @PublicRoute()
   @Mutation(() => LoginResponse)
   async login(@Args('input') input: LoginInput): Promise<LoginResponse> {
     const user = await this.authService.ValidateUser(

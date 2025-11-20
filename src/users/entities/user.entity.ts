@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
@@ -11,6 +17,14 @@ export class User {
   @Field()
   @Column({ unique: true })
   username: string;
+
+  @Field()
+  @Column()
+  firstname: string;
+
+  @Field()
+  @Column()
+  lastname: string;
 
   @Column()
   password: string; // never expose in GraphQL

@@ -4,9 +4,11 @@ import { Module, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    UsersModule, // UsersModule should export UsersResolver 
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: (configService: ConfigService) => {

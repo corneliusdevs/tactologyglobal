@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
@@ -22,26 +22,25 @@ import { DataSource } from 'typeorm';
           synchronize: !isProd,
 
           logging: !isProd,
-
-          ssl: isProd // Postgres requires SSL in production
-            ? { rejectUnauthorized: false }
-            : false,
+          ssl: {
+            rejectUnauthorized: false, // Required for Render and prevents SSL issues
+          },
         };
       },
       inject: [ConfigService],
     }),
   ],
 })
-
 export class DatabaseModule implements OnModuleInit {
   constructor(private dataSource: DataSource) {}
-
+  private readonly logger = new Logger(DatabaseModule.name);
+  
   async onModuleInit() {
     try {
       await this.dataSource.query('SELECT 1');
-      console.log('Database connection successful!');
+      this.logger.log('Database connection successful!');
     } catch (error) {
-      console.error('Database connection failed!', error);
+      this.logger.error('Database connection failed!', error);
     }
   }
 }

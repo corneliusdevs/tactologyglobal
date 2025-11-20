@@ -1,22 +1,16 @@
 import { MiddlewareConsumer, Module, NestModule, Logger } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule} from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
-
 import { DatabaseModule } from './database/database.module';
 import { GraphqlSetupModule } from './graphql-setup/grapghql-setup.module';
-
-// import { UsersModule } from './users/users.module';
-// import { ProductsModule } from './products/products.module';
-// import { CategoryModule } from './category/category.module';
-// import { SuppliersModule } from './suppliers/suppliers.module';
-// import { ImageModule } from './images/images.module';
-// import { OrderModule } from './order/order.module';
-
 import { LoggingMiddleware } from './utils/logging/logging.middleware';
-// import { AppController } from './app.controller';
-// import { AppService } from './app.service';
-// import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { AppService } from './app.service';
+import { SeederModule } from './database/seeds/seed.module';
+import { AuthModule } from './auth/auth.module';
+import { GqlThrottlerGuard } from './common/guards/gql-throttler.guard';
+import { GqlAuthGuard } from './common/guards/gql-auth.guard';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -34,32 +28,23 @@ import { LoggingMiddleware } from './utils/logging/logging.middleware';
     GraphqlSetupModule,
 
     // Feature modules
-    // UsersModule,
-    // ProductsModule,
-    // CategoryModule,
-    // SuppliersModule,
-    // ImageModule,
-    // OrderModule,
+    SeederModule,
+    AuthModule,
   ],
   controllers: [
-    // AppController
+    AppController
 ],
   providers: [
-    // AppService,
-  //     {
-  //   provide: APP_GUARD,
-  //   useClass: JwtAuthGuard, // global auth guard
-  // },
+    AppService,
+      {
+    provide: APP_GUARD,
+    useClass: GqlAuthGuard, // global auth guard
+  },
     // Enforce global rate limiting guard
     {
       provide: APP_GUARD,
-      useClass: ThrottlerGuard,
+      useClass: GqlThrottlerGuard,
     },
-    // Optional: Global JWT auth guard (can be overridden per resolver)
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
   ],
 })
 export class AppModule implements NestModule {
