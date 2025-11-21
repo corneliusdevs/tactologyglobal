@@ -11,6 +11,8 @@ import { AuthModule } from './auth/auth.module';
 import { GqlThrottlerGuard } from './common/guards/gql-throttler.guard';
 import { GqlAuthGuard } from './common/guards/gql-auth.guard';
 import { AppController } from './app.controller';
+import { UsersModule } from './users/users.module';
+import { DepartmentsModule } from './departments/departments.module';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { AppController } from './app.controller';
     GraphqlSetupModule,
 
     // Feature modules
+    UsersModule,
+    DepartmentsModule,
     SeederModule,
     AuthModule,
   ],

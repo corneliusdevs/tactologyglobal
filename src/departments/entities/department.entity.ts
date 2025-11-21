@@ -1,5 +1,12 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  ArrayMinSize,
+  ArrayNotEmpty,
+  IsNotEmpty,
+  ValidateIf,
+  ValidateNested,
+} from 'class-validator';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @ObjectType()
 export class SubDepartment {
@@ -11,8 +18,8 @@ export class SubDepartment {
   @Column()
   name: string;
 }
-
 @ObjectType()
+@Entity()
 export class Department {
   @Field(() => ID)
   @PrimaryGeneratedColumn()
@@ -24,6 +31,6 @@ export class Department {
 
   // Store subDepartments as JSON array
   @Field(() => [SubDepartment], { nullable: true })
-  @Column('json', { nullable: true })
-  subDepartments?: SubDepartment[];
+  @Column('json', { nullable: true, default: [] })
+  subDepartments: SubDepartment[];
 }

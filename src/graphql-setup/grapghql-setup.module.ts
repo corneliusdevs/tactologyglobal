@@ -16,6 +16,7 @@ import { UsersModule } from 'src/users/users.module';
         return {
           autoSchemaFile: join(process.cwd(), 'dist/schema.gql'),
           sortSchema: true,
+          validate: true, // enables class-validator
           playground:
             !isProd && configService.get('ENABLE_GRAPHQL_PLAYGROUND', false),
           introspection: !isProd,

@@ -1,10 +1,13 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { Type } from 'class-transformer';
 import {
+  ArrayMinSize,
+  ArrayNotEmpty,
   IsArray,
   IsOptional,
   IsString,
   MinLength,
+  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 
@@ -24,9 +27,12 @@ export class CreateDepartmentInput {
   name: string;
 
   @Field(() => [SubDepartmentInput], { nullable: true })
-  @IsOptional()
-  @IsArray()
+  @ValidateIf((o, value) => value !== null && value !== undefined)
+  @ArrayNotEmpty({ message: "subDepartments cannot be empty if provided" })
+  @ArrayMinSize(1, {
+    message: "subDepartments must contain at least one item",
+  })
   @ValidateNested({ each: true })
   @Type(() => SubDepartmentInput)
-  subDepartments?: SubDepartmentInput[];
+  subDepartments: SubDepartmentInput[];
 }
