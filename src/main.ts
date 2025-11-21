@@ -37,9 +37,7 @@ async function bootstrap() {
     }),
   );
 
-  // ----------------------------
   // Ready message
-  // ----------------------------
   await app.listen(port);
   logger.log(`Application is running on: http://localhost:${port}`);
   logger.log(`Environment: ${isProd ? 'Production' : 'Development'}`);
