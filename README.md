@@ -6,12 +6,12 @@ This project is built with **NestJS**, **TypeORM**, and **GraphQL**. It provides
 
 Key features:
 
-* JWT-based authentication.
-* Department management with optional sub-departments.
-* GraphQL API with playground.
-* Database seeding for creating an initial admin user.
-* Rate limiting with throttler.
-* Configurable via environment variables.
+- JWT-based authentication.
+- Department management with optional sub-departments.
+- GraphQL API with playground.
+- Database seeding for creating an initial admin user.
+- Rate limiting with throttler.
+- Configurable via environment variables.
 
 ---
 
@@ -19,10 +19,10 @@ Key features:
 
 ### 1.1 Prerequisites
 
-* Node.js ≥ 20
-* PostgreSQL (or compatible SQL database)
-* `npm` or `yarn`
-* Optional: `ts-node` for running scripts
+- Node.js ≥ 20
+- PostgreSQL (or compatible SQL database)
+- `npm` or `yarn`
+- Optional: `ts-node` for running scripts
 
 ### 1.2 Clone the Repository
 
@@ -81,13 +81,13 @@ TypeOrmModule.forRoot({
   database: process.env.DB_NAME,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   synchronize: true, // disable in production
-})
+});
 ```
 
 ### 2.2 Run Migrations / Synchronize
 
-* In development, `synchronize: true` will automatically create tables.
-* In production, use migrations instead.
+- In development, `synchronize: true` will automatically create tables.
+- In production, use migrations instead.
 
 ---
 
@@ -100,7 +100,7 @@ The project includes a **Seeder** for creating an initial admin user.
 Run the seeding script:
 
 ```bash
-ts-node -r tsconfig-paths/register src/database/seeds/seed.ts
+npm run seed:admin
 ```
 
 Expected output:
@@ -117,8 +117,8 @@ If the admin user already exists:
 
 ### 3.2 Seed Service
 
-* `SeedService` orchestrates the seeding.
-* `AdminUserSeeder` creates an admin with credentials from `.env`.
+- `SeedService` orchestrates the seeding.
+- `AdminUserSeeder` creates an admin with credentials from `.env`.
 
 ---
 
@@ -130,7 +130,7 @@ If the admin user already exists:
 npm run start:dev
 ```
 
-* The application runs at: `http://localhost:3000`
+- The application runs at: `http://localhost:3000`
 
 ### 4.2 Production
 
@@ -145,8 +145,8 @@ npm run start:prod
 
 ### 5.1 Playground
 
-* Available at: `http://localhost:3000/graphql`
-* Test queries, mutations, and subscriptions here.
+- Available at: `http://localhost:3000/graphql`
+- Test queries, mutations, and subscriptions here.
 
 ---
 
@@ -156,13 +156,12 @@ npm run start:prod
 
 ```graphql
 mutation {
-  createDepartment(input: {
-    name: "Finance",
-    subDepartments: [
-      { name: "Accounts" },
-      { name: "Audit" }
-    ]
-  }) {
+  createDepartment(
+    input: {
+      name: "Finance"
+      subDepartments: [{ name: "Accounts" }, { name: "Audit" }]
+    }
+  ) {
     id
     name
     subDepartments {
@@ -173,17 +172,14 @@ mutation {
 }
 ```
 
-* `subDepartments` is optional.
-* Validation: `name` min length 2.
+- `subDepartments` should be null if none is provided. Empty array values are not allowed.
+- Validation: `name` min length 2.
 
 ### 6.2 Update Department
 
 ```graphql
-mutation {
-  updateDepartment(input: {
-    id: 1,
-    name: "Finance Updated"
-  }) {
+mutation updateDepartment($id: ID!, $input: UpdateDepartmentInput!) {
+  updateDepartment(id: $id, input: $input) {
     id
     name
     subDepartments {
@@ -197,17 +193,17 @@ mutation {
 ### 6.3 Delete Department
 
 ```graphql
-mutation {
-  deleteDepartment(id: 1)
+mutation deleteDepartment($id: Int!) {
+  deleteDepartment(id: $id)
 }
 ```
 
-* Deletes the department and all sub-departments.
+- Deletes the department and all sub-departments.
 
 ### 6.4 Fetch Departments
 
 ```graphql
-query {
+query getDepartments {
   getDepartments {
     id
     name
@@ -227,17 +223,23 @@ query {
 
 ```graphql
 mutation {
-  login(input: {
-    username: "admin@tactology.com",
-    password: "DefaultAdmin123!"
-  }) {
+  login(
+    input: {
+      username: "adminuser@tactology.com"
+      password: "52417@_tactologyAdmin"
+    }
+  ) {
     accessToken
+    user {
+      id
+      username
+    }
   }
 }
 ```
 
-* Returns a JWT token.
-* Use this token for protected endpoints with:
+- Returns a JWT token.
+- Use this token for protected endpoints with:
 
 ```json
 {
@@ -265,6 +267,7 @@ mutation {
      }
    }
    ```
+
 7. Add JWT token in **Headers** if required:
 
    ```
@@ -275,7 +278,7 @@ mutation {
 
 ## 9. Notes
 
-* All protected endpoints require `@GqlAuthGuard` unless marked with `@Public()` decorator.
-* Rate limiting is applied globally via `GqlThrottlerGuard`.
-* Environment variables must be set correctly for database and JWT auth.
-* Admin user seeding is required for initial login.
+- All protected endpoints require `@GqlAuthGuard` unless marked with `@PublicRoute()` decorator.
+- Rate limiting is applied globally via `GqlThrottlerGuard`.
+- Environment variables must be set correctly for database and JWT auth.
+- Admin user seeding is required for initial login.
