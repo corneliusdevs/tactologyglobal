@@ -61,6 +61,9 @@ ADMIN_PASSWORD=DefaultAdmin123!
 
 # Application environment
 NODE_ENV=development
+
+# CORS 
+CORS_ORIGIN=<yourfrontendurl.com>
 ```
 
 ---
